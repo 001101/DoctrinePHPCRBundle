@@ -197,6 +197,14 @@ class DoctrinePHPCRExtension extends AbstractDoctrineExtension
 
         // pipe additional parameters unchanged to jackalope
         $backendParameters += $session['backend']['parameters'];
+        if (array_key_exists('curl_options', $session['backend']) && count($session['backend']['curl_options'])) {
+            $curlOptions = array();
+            foreach ($session['backend']['curl_options'] as $option => $value) {
+                $curlOptions[constant('CURLOPT_' . $option)] = $value;
+            }
+            $backendParameters['jackalope.jackrabbit_curl_options'] = $curlOptions;
+        }
+
         // only set this default here when we know we are jackalope
         if (!isset($backendParameters['jackalope.check_login_on_server'])) {
             $backendParameters['jackalope.check_login_on_server'] = $container->getParameter('kernel.debug');
