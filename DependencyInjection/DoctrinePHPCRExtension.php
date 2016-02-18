@@ -200,7 +200,11 @@ class DoctrinePHPCRExtension extends AbstractDoctrineExtension
         if (array_key_exists('curl_options', $session['backend']) && count($session['backend']['curl_options'])) {
             $curlOptions = array();
             foreach ($session['backend']['curl_options'] as $option => $value) {
-                $curlOptions[constant('CURLOPT_' . $option)] = $value;
+                if (!is_int($option)) {
+                    $option = constant($option);
+                }
+
+                $curlOptions[$option] = $value;
             }
             $backendParameters['jackalope.jackrabbit_curl_options'] = $curlOptions;
         }
